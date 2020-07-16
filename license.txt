@@ -1,0 +1,3 @@
+steve@orderedlist.com
+Creative Commons Attribution-ShareAlike 3.0 Unported License
+https://github.com/orderedlist/minimal#license
