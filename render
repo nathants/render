@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 import argh  # python3 -m pip install argh
 import grip  # python3 -m pip install grip
 import subprocess
@@ -313,6 +314,7 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
         <div class="wrapper">
             <header>
                 <h1>TITLE</h1>
+                <h2>SUBTITLE</h2>
                 <p class="view"><a href="LINK_HREF">LINK_NAME</a></p>
             </header>
             <section>
@@ -345,14 +347,18 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
 </content>
 """
 
-def main(github_markdown, title, header_link_name, header_link_href):
+def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer=""):
     """
     render github markdown to html with a theme based on github.com/orderedlist/minimal
     """
-    content = check_output(f'grip {github_markdown} --norefresh --no-inline --export -').split('<body>')[-1].split('</body>')[0]
+    content = check_output(f'grip {github_markdown} --norefresh --no-inline --export -')
+    content = re.split(r'<article[^>]*>', content)[-1]
+    content = content.split('</article>')[0]
     print(template
           .replace('CONTENT', content)
+          .replace('SUBTITLE', subtitle)
           .replace('TITLE', title)
+          .replace('FOOTER', footer)
           .replace('LINK_NAME', header_link_name)
           .replace('LINK_HREF', header_link_href))
 
