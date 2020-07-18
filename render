@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import re
 import argh  # python3 -m pip install argh
 import grip  # python3 -m pip install grip
@@ -93,7 +94,8 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
                 color:#444;
                 font-weight:500;
             }
-            th {
+            th, td {
+                padding-left: 0;
                 color:#444;
             }
             img {
@@ -105,59 +107,14 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
                 position:fixed;
                 -webkit-font-smoothing:subpixel-antialiased;
             }
-            header ul {
-                list-style:none;
-                height:40px;
-                padding:0;
-                background: #f4f4f4;
-                border-radius:5px;
-                border:1px solid #e0e0e0;
-                width:270px;
-            }
-            header li {
-                width:89px;
-                float:left;
-                border-right:1px solid #e0e0e0;
-                height:40px;
-            }
-            header li:first-child a {
-                border-radius:5px 0 0 5px;
-            }
-            header li:last-child a {
-                border-radius:0 5px 5px 0;
-            }
-            header ul a {
-                line-height:1;
-                font-size:11px;
-                color:#999;
-                display:block;
-                text-align:center;
-                padding-top:6px;
-                height:34px;
-            }
-            header ul a:hover {
-                color:#999;
-            }
-            header ul a:active {
-                background-color:#f0f0f0;
-            }
             strong {
                 color:#222;
                 font-weight:500;
             }
-            header ul li + li + li {
-                border-right:none;
-                width:89px;
-            }
-            header ul a strong {
-                font-size:14px;
-                display:block;
-                color:#222;
-            }
             section {
                 width:500px;
                 float:right;
-                padding-bottom:50px;
+                padding-bottom:10px;
             }
             small {
                 font-size:11px;
@@ -185,22 +142,19 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
                     position:static;
                     width:auto;
                 }
-                header {
-                    padding-right:320px;
+                h2 {
+                    border-top:1px solid #e5e5e5;
+                    border-width:1px 0;
+                    padding-top: 20px;
                 }
-                section {
-                    border:1px solid #e5e5e5;
+                footer {
+                    border-top:1px solid #e5e5e5;
                     border-width:1px 0;
                     padding:20px 0;
                     margin:0 0 20px;
                 }
                 header a small {
                     display:inline;
-                }
-                header ul {
-                    position:absolute;
-                    right:50px;
-                    top:52px;
                 }
             }
             @media print, screen and (max-width: 720px) {
@@ -210,7 +164,7 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
                 header {
                     padding:0;
                 }
-                header ul, header p.view {
+                header p.view {
                     position:static;
                 }
                 pre, code {
@@ -220,12 +174,6 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
             @media print, screen and (max-width: 480px) {
                 body {
                     padding:15px;
-                }
-                header ul {
-                    width:99%;
-                }
-                header li, header ul li + li + li {
-                    width:33%;
                 }
             }
             @media print {
@@ -237,76 +185,75 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
             }
         </style>
         <style>
-            .pl  { background: #002B36; }
-            .pl-hll { background-color: #ffffcc }
-            .pl-c { color: #586E75 } /* Comment */
-            .pl-err { color: #93A1A1 } /* Error */
-            .pl-g { color: #93A1A1 } /* Generic */
-            .pl-k { color: #859900 } /* Keyword */
-            .pl-l { color: #93A1A1 } /* Literal */
-            .pl-n { color: #93A1A1 } /* Name */
-            .pl-o { color: #859900 } /* Operator */
-            .pl-x { color: #CB4B16 } /* Other */
-            .pl-p { color: #93A1A1 } /* Punctuation */
-            .pl-cm { color: #586E75 } /* Comment.Multiline */
-            .pl-cp { color: #859900 } /* Comment.Preproc */
-            .pl-c1 { color: #586E75 } /* Comment.Single */
-            .pl-cs { color: #859900 } /* Comment.Special */
-            .pl-gd { color: #2AA198 } /* Generic.Deleted */
-            .pl-ge { color: #93A1A1; font-style: italic } /* Generic.Emph */
-            .pl-gr { color: #DC322F } /* Generic.Error */
-            .pl-gh { color: #CB4B16 } /* Generic.Heading */
-            .pl-gi { color: #859900 } /* Generic.Inserted */
-            .pl-go { color: #93A1A1 } /* Generic.Output */
-            .pl-gp { color: #93A1A1 } /* Generic.Prompt */
-            .pl-gs { color: #93A1A1; font-weight: bold } /* Generic.Strong */
-            .pl-gu { color: #CB4B16 } /* Generic.Subheading */
-            .pl-gt { color: #93A1A1 } /* Generic.Traceback */
-            .pl-kc { color: #CB4B16 } /* Keyword.Constant */
-            .pl-kd { color: #268BD2 } /* Keyword.Declaration */
-            .pl-kn { color: #859900 } /* Keyword.Namespace */
-            .pl-kp { color: #859900 } /* Keyword.Pseudo */
-            .pl-kr { color: #268BD2 } /* Keyword.Reserved */
-            .pl-kt { color: #DC322F } /* Keyword.Type */
-            .pl-ld { color: #93A1A1 } /* Literal.Date */
-            .pl-m { color: #2AA198 } /* Literal.Number */
-            .pl-s { color: #2AA198 } /* Literal.String */
-            .pl-na { color: #93A1A1 } /* Name.Attribute */
-            .pl-nb { color: #B58900 } /* Name.Builtin */
-            .pl-nc { color: #268BD2 } /* Name.Class */
-            .pl-no { color: #CB4B16 } /* Name.Constant */
-            .pl-nd { color: #268BD2 } /* Name.Decorator */
-            .pl-ni { color: #CB4B16 } /* Name.Entity */
-            .pl-ne { color: #CB4B16 } /* Name.Exception */
-            .pl-nf { color: #268BD2 } /* Name.Function */
-            .pl-nl { color: #93A1A1 } /* Name.Label */
-            .pl-nn { color: #93A1A1 } /* Name.Namespace */
-            .pl-nx { color: #93A1A1 } /* Name.Other */
-            .pl-py { color: #93A1A1 } /* Name.Property */
-            .pl-nt { color: #268BD2 } /* Name.Tag */
-            .pl-nv { color: #268BD2 } /* Name.Variable */
-            .pl-ow { color: #859900 } /* Operator.Word */
-            .pl-w { color: #93A1A1 } /* Text.Whitespace */
-            .pl-mf { color: #2AA198 } /* Literal.Number.Float */
-            .pl-mh { color: #2AA198 } /* Literal.Number.Hex */
-            .pl-mi { color: #2AA198 } /* Literal.Number.Integer */
-            .pl-mo { color: #2AA198 } /* Literal.Number.Oct */
-            .pl-sb { color: #586E75 } /* Literal.String.Backtick */
-            .pl-sc { color: #2AA198 } /* Literal.String.Char */
-            .pl-sd { color: #93A1A1 } /* Literal.String.Doc */
-            .pl-s2 { color: #2AA198 } /* Literal.String.Double */
-            .pl-se { color: #CB4B16 } /* Literal.String.Escape */
-            .pl-sh { color: #93A1A1 } /* Literal.String.Heredoc */
-            .pl-si { color: #2AA198 } /* Literal.String.Interpol */
-            .pl-sx { color: #2AA198 } /* Literal.String.Other */
-            .pl-sr { color: #DC322F } /* Literal.String.Regex */
-            .pl-s1 { color: #2AA198 } /* Literal.String.Single */
-            .pl-ss { color: #2AA198 } /* Literal.String.Symbol */
-            .pl-bp { color: #268BD2 } /* Name.Builtin.Pseudo */
-            .pl-vc { color: #268BD2 } /* Name.Variable.Class */
-            .pl-vg { color: #268BD2 } /* Name.Variable.Global */
-            .pl-vi { color: #268BD2 } /* Name.Variable.Instance */
-            .pl-il { color: #2AA198 } /* Literal.Number.Integer.Long */
+            .highlight, .highlight pre, .highlight table { background-color: #002b36 !important; color: #93a1a1 !important; }
+            .highlight .pl-c { color: #586e75 !important; } /* Comment */
+            .highlight .pl-err { color: #dc322f !important; background-color: #fdf6e3 !important; } /* Error */
+            .highlight .pl-g { color: #93a1a1 !important; } /* Generic */
+            .highlight .pl-k { color: #CB4B16 !important; } /* Keyword */
+            .highlight .pl-l { color: #93a1a1 !important; } /* Literal */
+            .highlight .pl-n, .highlight .h { color: #93a1a1 !important; } /* Name */
+            .highlight .pl-o { color: #859900 !important; } /* Operator */
+            .highlight .pl-x { color: #cb4b16 !important; } /* Other */
+            .highlight .pl-p { color: #93a1a1 !important; } /* Punctuation */
+            .highlight .pl-cm { color: #586e75 !important; } /* Comment.Multiline */
+            .highlight .pl-cp { color: #859900 !important; } /* Comment.Preproc */
+            .highlight .pl-c1 { color: #859900 !important; } /* Comment.Single */
+            .highlight .pl-cs { color: #859900 !important; } /* Comment.Special */
+            .highlight .pl-gd { color: #2aa198 !important; } /* Generic.Deleted */
+            .highlight .pl-ge { color: #93a1a1 !important; font-style: italic !important; } /* Generic.Emph */
+            .highlight .pl-gr { color: #dc322f !important; } /* Generic.Error */
+            .highlight .pl-gh { color: #cb4b16 !important; } /* Generic.Heading */
+            .highlight .pl-gi { color: #859900 !important; } /* Generic.Inserted */
+            .highlight .pl-go { color: #93a1a1 !important; } /* Generic.Output */
+            .highlight .pl-gp { color: #93a1a1 !important; } /* Generic.Prompt */
+            .highlight .pl-gs { color: #93a1a1 !important; font-weight: bold !important; } /* Generic.Strong */
+            .highlight .pl-gu { color: #cb4b16 !important; } /* Generic.Subheading */
+            .highlight .pl-gt { color: #93a1a1 !important; } /* Generic.Traceback */
+            .highlight .pl-kc { color: #cb4b16 !important; } /* Keyword.Constant */
+            .highlight .pl-kd { color: #268bd2 !important; } /* Keyword.Declaration */
+            .highlight .pl-kn { color: #859900 !important; } /* Keyword.Namespace */
+            .highlight .pl-kp { color: #859900 !important; } /* Keyword.Pseudo */
+            .highlight .pl-kr { color: #268bd2 !important; } /* Keyword.Reserved */
+            .highlight .pl-kt { color: #dc322f !important; } /* Keyword.Type */
+            .highlight .pl-ld { color: #93a1a1 !important; } /* Literal.Date */
+            .highlight .pl-m { color: #2aa198 !important; } /* Literal.Number */
+            .highlight .pl-s { color: #2aa198 !important; } /* Literal.String */
+            .highlight .pl-na { color: #93a1a1 !important; } /* Name.Attribute */
+            .highlight .pl-nb { color: #B58900 !important; } /* Name.Builtin */
+            .highlight .pl-nc { color: #268bd2 !important; } /* Name.Class */
+            .highlight .pl-no { color: #cb4b16 !important; } /* Name.Constant */
+            .highlight .pl-nd { color: #268bd2 !important; } /* Name.Decorator */
+            .highlight .pl-ni { color: #cb4b16 !important; } /* Name.Entity */
+            .highlight .pl-ne { color: #cb4b16 !important; } /* Name.Exception */
+            .highlight .pl-nf { color: #268bd2 !important; } /* Name.Function */
+            .highlight .pl-nl { color: #93a1a1 !important; } /* Name.Label */
+            .highlight .pl-nn { color: #93a1a1 !important; } /* Name.Namespace */
+            .highlight .pl-nx { color: #93a1a1 !important; } /* Name.Other */
+            .highlight .pl-py { color: #93a1a1 !important; } /* Name.Property */
+            .highlight .pl-nt { color: #268bd2 !important; } /* Name.Tag */
+            .highlight .pl-nv { color: #268bd2 !important; } /* Name.Variable */
+            .highlight .pl-ow { color: #859900 !important; } /* Operator.Word */
+            .highlight .pl-w { color: #93a1a1 !important; } /* Text.Whitespace */
+            .highlight .pl-mf { color: #2aa198 !important; } /* Literal.Number.Float */
+            .highlight .pl-mh { color: #2aa198 !important; } /* Literal.Number.Hex */
+            .highlight .pl-mi { color: #2aa198 !important; } /* Literal.Number.Integer */
+            .highlight .pl-mo { color: #2aa198 !important; } /* Literal.Number.Oct */
+            .highlight .pl-sb { color: #586e75 !important; } /* Literal.String.Backtick */
+            .highlight .pl-sc { color: #2aa198 !important; } /* Literal.String.Char */
+            .highlight .pl-sd { color: #93a1a1 !important; } /* Literal.String.Doc */
+            .highlight .pl-s2 { color: #2aa198 !important; } /* Literal.String.Double */
+            .highlight .pl-se { color: #cb4b16 !important; } /* Literal.String.Escape */
+            .highlight .pl-sh { color: #93a1a1 !important; } /* Literal.String.Heredoc */
+            .highlight .pl-si { color: #2aa198 !important; } /* Literal.String.Interpol */
+            .highlight .pl-sx { color: #2aa198 !important; } /* Literal.String.Other */
+            .highlight .pl-sr { color: #dc322f !important; } /* Literal.String.Regex */
+            .highlight .pl-s1 { color: #93a1a1 !important; } /* Literal.String.Single */
+            .highlight .pl-ss { color: #2aa198 !important; } /* Literal.String.Symbol */
+            .highlight .pl-bp { color: #268bd2 !important; } /* Name.Builtin.Pseudo */
+            .highlight .pl-vc { color: #268bd2 !important; } /* Name.Variable.Class */
+            .highlight .pl-vg { color: #268bd2 !important; } /* Name.Variable.Global */
+            .highlight .pl-vi { color: #268bd2 !important; } /* Name.Variable.Instance */
+            .highlight .pl-il { color: #2aa198 !important; } /* Literal.Number.Integer.Long */
         </style>
         <meta name="viewport" content="width=device-width">
     </head>
@@ -320,9 +267,7 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
             <section>
                 CONTENT
             </section>
-            <footer>
-                FOOTER
-            </footer>
+            FOOTER
         </div>
         <script>
             var metas = document.getElementsByTagName('meta');
@@ -351,14 +296,16 @@ def main(github_markdown, title, subtitle, header_link_name, header_link_href, f
     """
     render github markdown to html with a theme based on github.com/orderedlist/minimal
     """
-    content = check_output(f'grip {github_markdown} --norefresh --no-inline --export -')
+    options = os.environ.get('GRIP_OPTIONS', '')
+    content = check_output(f'grip {github_markdown} {options} --norefresh --no-inline --export -')
     content = re.split(r'<article[^>]*>', content)[-1]
     content = content.split('</article>')[0]
+    content = content.replace('user-content-', '')
     print(template
           .replace('CONTENT', content)
           .replace('SUBTITLE', subtitle)
           .replace('TITLE', title)
-          .replace('FOOTER', footer)
+          .replace('FOOTER', f'<footer>{footer}</footer>' if footer else '')
           .replace('LINK_NAME', header_link_name)
           .replace('LINK_HREF', header_link_href))
 
