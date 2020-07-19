@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import os
 import re
-import argh  # python3 -m pip install argh
-import grip  # python3 -m pip install grip
+import argh
+import grip
 import subprocess
 
 check_output = lambda *a: subprocess.check_output(' '.join(map(str, a)), shell=True, executable='/bin/bash').decode('utf-8').strip()
@@ -292,7 +292,7 @@ template = """<!-- based on: https://github.com/orderedlist/minimal -->
 
 def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer=""):
     """
-    render github markdown to html with a theme based on github.com/orderedlist/minimal
+    render github markdown to html
     """
     options = os.environ.get('GRIP_OPTIONS', '')
     content = check_output(f'grip {github_markdown} {options} --norefresh --no-inline --export -')
