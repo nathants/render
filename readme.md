@@ -29,7 +29,7 @@ firefox localhost:8000
 
 ```
 >> render -h
-usage: render [-h] [-f FOOTER] github-markdown title subtitle header-link-name header-link-href
+usage: render [-h] [-f FOOTER] [-c CSS] github-markdown title subtitle header-link-name header-link-href
 
     render github markdown to html
 
@@ -44,6 +44,8 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -f FOOTER, --footer FOOTER
+                        ''
+  -c CSS, --css CSS     ''
 ```
 
 ## examples
