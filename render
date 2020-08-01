@@ -246,7 +246,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
             .highlight .pl-si { color: #2aa198 !important; } /* Literal.String.Interpol */
             .highlight .pl-sx { color: #2aa198 !important; } /* Literal.String.Other */
             .highlight .pl-sr { color: #dc322f !important; } /* Literal.String.Regex */
-            .highlight .pl-s1 { color: #93a1a1 !important; } /* Literal.String.Single */
+            .highlight .pl-s1 { color: #333    !important; } /* Literal.String.Single */
             .highlight .pl-ss { color: #2aa198 !important; } /* Literal.String.Symbol */
             .highlight .pl-bp { color: #268bd2 !important; } /* Name.Builtin.Pseudo */
             .highlight .pl-vc { color: #268bd2 !important; } /* Name.Variable.Class */
