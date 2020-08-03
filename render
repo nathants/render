@@ -255,6 +255,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
             .highlight .pl-il { color: #2aa198 !important; } /* Literal.Number.Integer.Long */
         </style>
         <meta name="viewport" content="width=device-width">
+        %(head)s
     </head>
     <body>
         <div class="wrapper">
@@ -291,7 +292,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
 </content>
 """
 
-def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer="", css=""):
+def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer="", css="", head=""):
     """
     render github markdown to html
     """
@@ -308,6 +309,7 @@ def main(github_markdown, title, subtitle, header_link_name, header_link_href, f
         'link_name': header_link_name,
         'link_href': header_link_href,
         'css': css,
+        'head': head,
     })
 
 if __name__ == '__main__':
