@@ -35,6 +35,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
             h1 {
                 font-size:28px;
                 font-weight: 500;
+                line-height: 40px;
             }
             h2 {
                 color:#393939;
