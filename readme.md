@@ -1,3 +1,5 @@
+# render
+
 ## why
 
 minimal web content should be easy.
