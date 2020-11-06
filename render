@@ -293,7 +293,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
 </content>
 """
 
-def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer="", css="", head=""):
+def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer="", css="", head="", dont_strip_first_content_h1=False):
     """
     render github markdown to html
     """
@@ -302,6 +302,8 @@ def main(github_markdown, title, subtitle, header_link_name, header_link_href, f
     content = re.split(r'<article[^>]*>', content)[-1]
     content = content.split('</article>')[0]
     content = content.replace('user-content-', '')
+    if not dont_strip_first_content_h1:
+        content = content.split('<h1>')[-1].split('</h1>', 1)[-1]
     print(template % {
         'content': content,
         'subtitle': subtitle,
