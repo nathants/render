@@ -13,7 +13,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title>%(title)s</title>
+        <title>%(title_header)s</title>
         <style>
             body {
                 background-color: #fff;
@@ -293,7 +293,7 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
 </content>
 """
 
-def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer="", css="", head="", dont_strip_first_content_h1=False):
+def main(github_markdown, title, subtitle, header_link_name, header_link_href, footer="", css="", head="", dont_strip_first_content_h1=False, title_header=None):
     """
     render github markdown to html
     """
@@ -304,10 +304,13 @@ def main(github_markdown, title, subtitle, header_link_name, header_link_href, f
     content = content.replace('user-content-', '')
     if not dont_strip_first_content_h1:
         content = content.split('<h1>')[-1].split('</h1>', 1)[-1]
+    if not title_header:
+        title_header = title
     print(template % {
         'content': content,
         'subtitle': subtitle,
         'title': title,
+        'title_header': title_header,
         'footer': f'<footer>{footer}</footer>' if footer else '',
         'link_name': header_link_name,
         'link_href': header_link_href,
