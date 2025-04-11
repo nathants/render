@@ -52,4 +52,4 @@ optional arguments:
 
 ## examples
 
-all of [nathants.com](https://nathants.com) is created with render.
+all of [nathants.com/projects](https://nathants.com/projects) is created with render.
