@@ -32,6 +32,9 @@ template = r"""<!-- based on: https://github.com/orderedlist/minimal -->
             p.view {
                 margin: 20px 0;
             }
+            h1::first-letter {
+              text-transform: uppercase;
+            }
             h1, h2, h3 {
                 line-height:1.1;
             }
